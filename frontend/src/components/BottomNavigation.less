@@ -1,0 +1,110 @@
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 0 20px 8px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.highlighted {
+      position: relative;
+      top: 0px;
+
+      .bottom-navigation__icon-container {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+
+        i {
+          color: #ffffff;
+          font-size: 28px;
+        }
+      }
+
+      .bottom-navigation__label {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #667eea;
+        font-weight: 500;
+      }
+    }
+
+    &.active {
+      .bottom-navigation__icon-container i {
+        color: #667eea;
+      }
+
+      .bottom-navigation__label {
+        color: #667eea;
+        font-weight: 500;
+      }
+    }
+
+    &:not(.highlighted):not(.active) {
+      .bottom-navigation__icon-container i {
+        color: #999999;
+      }
+
+      .bottom-navigation__label {
+        color: #999999;
+      }
+    }
+
+    &:not(.highlighted) {
+      .bottom-navigation__icon-container {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          font-size: 20px;
+        }
+      }
+
+      .bottom-navigation__label {
+        margin-top: 4px;
+        font-size: 12px;
+      }
+    }
+
+    &:hover {
+      &:not(.highlighted) {
+        .bottom-navigation__icon-container i {
+          color: #667eea;
+        }
+
+        .bottom-navigation__label {
+          color: #667eea;
+        }
+      }
+    }
+  }
+}
+
+/* 为首页内容添加底部边距，避免被导航栏遮挡 */
+.home-root {
+  padding-bottom: 80px;
+}
