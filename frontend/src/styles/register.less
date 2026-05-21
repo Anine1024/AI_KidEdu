@@ -1,41 +1,50 @@
+@import './variables.less';
+
 .register-form {
+  font-family: @font-family;
+
   &__group {
-    margin-bottom: 20px;
+    margin-bottom: @space-lg;
     position: relative;
 
     &--captcha {
       .register-form__input--captcha {
-        padding-right: 100px;
+        padding-right: 110px;
       }
     }
   }
 
   &__icon {
     position: absolute;
-    left: 18px;
+    left: @space-lg;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 18px;
-    color: #888;
+    font-size: @font-size-md;
+    color: @text-secondary;
     z-index: 1;
   }
 
   &__input {
     width: 100%;
-    padding: 14px 20px 14px 48px;
-    border: 2px solid #e0e0e0;
-    border-radius: 16px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    background-color: #fafafa;
+    padding: 14px @space-xl 14px 46px;
+    border: 1.5px solid @border;
+    border-radius: @radius-md;
+    font-size: @font-size-md;
+    transition: all @transition-normal;
+    background-color: @bg-input;
     box-sizing: border-box;
     outline: none;
-    font-family: 'Nunito', sans-serif;
+    font-family: @font-family;
+    color: @text-primary;
+
+    &::placeholder {
+      color: @text-placeholder;
+    }
 
     &:focus {
-      border-color: #FF8C00;
-      box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
-      background-color: #fff;
+      border-color: @primary;
+      box-shadow: 0 0 0 3px rgba(91, 186, 138, 0.15);
+      background-color: @bg-card;
     }
 
     &::-webkit-inner-spin-button,
@@ -53,16 +62,16 @@
     width: 90px;
     height: 36px;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: @radius-sm;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
-    transition: all 0.2s;
+    background: @border;
+    transition: all @transition-fast;
 
     &:hover {
-      background: #e8e8e8;
+      background: darken(@border, 5%);
     }
 
     svg {
@@ -72,34 +81,35 @@
   }
 
   &__error {
-    color: #ff4d4f;
-    font-size: 12px;
-    margin-bottom: 8px;
+    color: @error;
+    font-size: @font-size-xs;
+    margin-bottom: @space-sm;
     text-align: center;
   }
 
   &__submit {
     width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, #FF8C00, #FFA500);
+    padding: 14px;
+    background: @primary;
     color: white;
     border: none;
-    border-radius: 16px;
-    font-size: 16px;
-    font-weight: 700;
+    border-radius: @radius-md;
+    font-size: @font-size-md;
+    font-weight: @font-weight-semibold;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
-    font-family: 'Nunito', sans-serif;
+    transition: all @transition-normal;
+    box-shadow: 0 4px 12px rgba(91, 186, 138, 0.25);
+    font-family: @font-family;
 
     &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(255, 140, 0, 0.4);
+      background: @primary-dark;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(91, 186, 138, 0.35);
     }
 
     &:disabled {
       cursor: not-allowed;
-      opacity: 0.8;
+      opacity: 0.7;
     }
   }
 }

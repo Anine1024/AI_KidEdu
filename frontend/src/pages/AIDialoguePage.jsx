@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../styles/aiDialogue.css';
+import '../styles/aiDialogue.less';
 
 function AIDialoguePage() {
   const [messages, setMessages] = useState([]);

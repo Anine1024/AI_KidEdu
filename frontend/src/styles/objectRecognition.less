@@ -1,69 +1,67 @@
-// AI 拍照识物页面样式 - 仅包含主题相关的样式
+@import './variables.less';
+
 .object-recognition-page {
   .image-capture-preview {
-    background: radial-gradient(circle at 20% 20%, #fef3e6 0, transparent 35%),
-                radial-gradient(circle at 90% 10%, #e6f7ff 0, transparent 40%),
-                #ffffff;
+    background: radial-gradient(circle at 20% 20%, @primary-light 0, transparent 35%),
+                radial-gradient(circle at 90% 10%, @secondary-light 0, transparent 40%),
+                @bg-card;
   }
-  
+
   .image-capture-btn--primary {
-    background-color: #ff7a45;
+    background-color: @primary;
     color: #fff;
-    box-shadow: 0 8px 20px rgba(255, 122, 69, 0.3);
-    
+    box-shadow: 0 8px 20px rgba(91, 186, 138, 0.3);
+
     &:hover {
-      background-color: #ff6b45;
-      box-shadow: 0 10px 24px rgba(255, 122, 69, 0.4);
+      background-color: @primary-dark;
+      box-shadow: 0 10px 24px rgba(91, 186, 138, 0.4);
     }
   }
-  
+
   .image-capture-btn--secondary {
-    background-color: #f5f5f5;
-    color: #444;
+    background-color: @bg-input;
+    color: @text-primary;
   }
-  
+
   .image-capture-loading__spinner {
-    border-color: rgba(255, 107, 107, 0.3);
-    border-top-color: #ff6b6b;
+    border-color: rgba(91, 186, 138, 0.3);
+    border-top-color: @primary;
   }
 }
-
-// 识别结果展示
 
 .object-recognition-result__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  
+  margin-bottom: @space-xl;
+
   h2 {
     font-size: 22px;
-    font-weight: 700;
-    color: #333;
+    font-weight: @font-weight-bold;
+    color: @text-primary;
     margin: 0;
   }
-  
+
   &__voice {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background-color: #ffd166;
+    border-radius: @radius-full;
+    background-color: @secondary;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 20px;
-    color: #333;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(255, 209, 102, 0.3);
-    
+    font-size: @font-size-xl;
+    color: @text-primary;
+    transition: all @transition-normal;
+    box-shadow: 0 2px 8px rgba(245, 200, 66, 0.3);
+
     &:hover {
-      background-color: #ffc107;
       transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(255, 209, 102, 0.4);
+      box-shadow: 0 4px 12px rgba(245, 200, 66, 0.4);
     }
-    
+
     &:active {
       transform: scale(0.95);
     }
@@ -73,103 +71,100 @@
 .object-recognition-result__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: @space-xl;
 }
 
 .object-recognition-result__name {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: @space-md;
   flex-wrap: wrap;
-  
+
   h3 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #ff6b6b;
+    font-size: @font-size-3xl;
+    font-weight: @font-weight-bold;
+    color: @primary-dark;
     margin: 0;
   }
-  
+
   &__category {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: @primary-light;
+    color: @primary-dark;
     padding: 6px 12px;
     border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: @font-size-sm;
+    font-weight: @font-weight-semibold;
   }
 }
 
 .object-recognition-result__pronunciation {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  
+  gap: @space-sm;
+  padding: @space-md @space-lg;
+  background-color: @bg-input;
+  border-radius: @radius-sm;
+
   i {
-    color: #9e9e9e;
-    font-size: 18px;
+    color: @text-secondary;
+    font-size: @font-size-lg;
   }
-  
+
   span {
-    font-size: 16px;
-    color: #616161;
-    font-weight: 500;
+    font-size: @font-size-md;
+    color: @text-secondary;
+    font-weight: @font-weight-medium;
   }
 }
 
 .object-recognition-result__description,
 .object-recognition-result__safety {
-  
   h4 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 12px 0;
+    font-size: @font-size-lg;
+    font-weight: @font-weight-semibold;
+    color: @text-primary;
+    margin: 0 0 @space-md 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    
+    gap: @space-sm;
+
     &::before {
       content: '';
       width: 4px;
       height: 20px;
-      background-color: #ff6b6b;
+      background-color: @primary;
       border-radius: 2px;
     }
   }
-  
+
   p {
-    font-size: 16px;
+    font-size: @font-size-md;
     line-height: 1.6;
-    color: #424242;
+    color: @text-primary;
     margin: 0;
   }
 }
 
 .object-recognition-result__safety {
-  
   h4 {
-    color: #ff9800;
-    
+    color: @warning;
+
     &::before {
-      background-color: #ff9800;
+      background-color: @warning;
     }
   }
-  
+
   p {
-    color: #5d4037;
+    color: #5D4037;
   }
 }
 
-// 响应式设计
 @media (max-width: 768px) {
   .object-recognition-result__name h3 {
-    font-size: 24px;
+    font-size: @font-size-2xl;
   }
-  
+
   .object-recognition-result {
-    padding: 20px;
+    padding: @space-xl;
   }
 }

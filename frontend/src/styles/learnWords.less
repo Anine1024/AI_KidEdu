@@ -1,35 +1,169 @@
-// 拍照学单词页面样式 - 仅包含主题相关的样式
+@import './variables.less';
+
 .learn-words-page {
   .image-capture-preview {
-    background: radial-gradient(circle at 20% 20%, #e8f5e8 0, transparent 35%),
-                radial-gradient(circle at 90% 10%, #fff3e0 0, transparent 40%),
-                #ffffff;
+    background: radial-gradient(circle at 20% 20%, @primary-light 0, transparent 35%),
+                radial-gradient(circle at 90% 10%, @secondary-light 0, transparent 40%),
+                @bg-card;
   }
-  
+
   .image-capture-btn--primary {
-    background-color: #4caf50;
+    background-color: @primary;
     color: #fff;
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
-    
+    box-shadow: 0 8px 20px rgba(91, 186, 138, 0.3);
+
     &:hover {
-      background-color: #45a049;
-      box-shadow: 0 10px 24px rgba(76, 175, 80, 0.4);
+      background-color: @primary-dark;
+      box-shadow: 0 10px 24px rgba(91, 186, 138, 0.4);
     }
   }
-  
+
   .image-capture-btn--secondary {
-    background-color: #f5f5f5;
-    color: #444;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    
+    background-color: @bg-input;
+    color: @text-primary;
+    box-shadow: @shadow-light;
+
     &:hover {
-      background-color: #e8e8e8;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      background-color: @border;
+      box-shadow: @shadow-medium;
     }
   }
-  
+
   .image-capture-loading__spinner {
-    border-color: rgba(76, 175, 80, 0.3);
-    border-top-color: #4caf50;
+    border-color: rgba(91, 186, 138, 0.3);
+    border-top-color: @primary;
+  }
+}
+
+.word-learning-result {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: @space-xl;
+
+    h2 {
+      font-size: 22px;
+      font-weight: @font-weight-bold;
+      color: @text-primary;
+      margin: 0;
+    }
+  }
+
+  &__voice {
+    width: 44px;
+    height: 44px;
+    border-radius: @radius-full;
+    background-color: @secondary;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: @font-size-xl;
+    color: @text-primary;
+    transition: all @transition-normal;
+    box-shadow: 0 2px 8px rgba(245, 200, 66, 0.3);
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(245, 200, 66, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: @space-xl;
+  }
+
+  &__word {
+    display: flex;
+    align-items: baseline;
+    gap: @space-md;
+    flex-wrap: wrap;
+
+    h3 {
+      font-size: 32px;
+      font-weight: @font-weight-bold;
+      color: @primary-dark;
+      margin: 0;
+    }
+  }
+
+  &__pronunciation {
+    font-size: @font-size-lg;
+    color: @text-secondary;
+    font-weight: @font-weight-medium;
+  }
+
+  &__definition {
+    h4 {
+      font-size: @font-size-lg;
+      font-weight: @font-weight-semibold;
+      color: @text-primary;
+      margin: 0 0 @space-md 0;
+      display: flex;
+      align-items: center;
+      gap: @space-sm;
+
+      &::before {
+        content: '';
+        width: 4px;
+        height: 20px;
+        background-color: @primary;
+        border-radius: 2px;
+      }
+    }
+
+    p {
+      font-size: @font-size-md;
+      line-height: 1.6;
+      color: @text-primary;
+      margin: 0;
+    }
+  }
+
+  &__examples {
+    h4 {
+      font-size: @font-size-lg;
+      font-weight: @font-weight-semibold;
+      color: @text-primary;
+      margin: 0 0 @space-md 0;
+      display: flex;
+      align-items: center;
+      gap: @space-sm;
+
+      &::before {
+        content: '';
+        width: 4px;
+        height: 20px;
+        background-color: @secondary;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  &__example {
+    display: flex;
+    gap: @space-sm;
+    padding: @space-sm 0;
+    font-size: @font-size-md;
+    line-height: 1.6;
+
+    &-number {
+      color: @primary;
+      font-weight: @font-weight-bold;
+      flex-shrink: 0;
+    }
+
+    p {
+      color: @text-primary;
+      margin: 0;
+    }
   }
 }
