@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../styles/learnWords.less';
 import BottomNavigation from '../components/BottomNavigation';
 import ImageCaptureAndProcess from '../components/ImageCaptureAndProcess';
@@ -31,6 +31,7 @@ function LearnWordsPage() {
   const [activeTab, setActiveTab] = useState('home');
   const [learningResult, setLearningResult] = useState(null);
   const [progressText, setProgressText] = useState('AI 识别中');
+  const timerRef = useRef(null);
 
   const handleClear = () => setLearningResult(null);
 
@@ -38,24 +39,33 @@ function LearnWordsPage() {
     setProgressText('正在压缩图片…');
     const dataUrl = await compressImage(file);
 
-    setProgressText('AI 正在识别…');
-    const res = await fetch('/api/ai/recognize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: dataUrl, type: 'word' }),
-    });
+    let seconds = 0;
+    timerRef.current = setInterval(() => {
+      seconds++;
+      setProgressText(`AI 正在识别…  ${seconds}s`);
+    }, 1000);
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || `请求失败: ${res.status}`);
+    try {
+      const res = await fetch('/api/ai/recognize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl, type: 'word' }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `请求失败: ${res.status}`);
+      }
+
+      const result = await res.json();
+      if (!result.success) throw new Error(result.message || '识别失败');
+
+      setProgressText(`识别完成 (${seconds}s)`);
+      setLearningResult(result.data);
+      return result.data;
+    } finally {
+      clearInterval(timerRef.current);
     }
-
-    const result = await res.json();
-    if (!result.success) throw new Error(result.message || '识别失败');
-
-    setProgressText('识别完成');
-    setLearningResult(result.data);
-    return result.data;
   };
 
   return (
