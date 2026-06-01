@@ -2,13 +2,15 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ImageCaptureAndProcess.less'
 
-function ImageCaptureAndProcess({ 
-  title, 
-  onRecognition, 
-  resultComponent: ResultComponent, 
-  resultData, 
+function ImageCaptureAndProcess({
+  title,
+  onRecognition,
+  resultComponent: ResultComponent,
+  resultData,
   theme = 'default',
-  className = ''
+  className = '',
+  onClear,
+  progressText = 'AI 识别中'
 }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isRecognizing, setIsRecognizing] = useState(false);
@@ -135,6 +137,7 @@ function ImageCaptureAndProcess({
     
     setSelectedImage(null);
     setError(null);
+    if (typeof onClear === 'function') onClear();
   };
 
   // 主题颜色配置
@@ -222,7 +225,7 @@ function ImageCaptureAndProcess({
               borderColor: `${currentTheme.loading}33`,
               borderTopColor: currentTheme.loading
             }}></div>
-            <p>AI 识别中</p>
+            <p>{progressText}</p>
           </div>
         )}
         

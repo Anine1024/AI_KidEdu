@@ -4,81 +4,72 @@ import BottomNavigation from '../components/BottomNavigation';
 import ImageCaptureAndProcess from '../components/ImageCaptureAndProcess';
 import WordLearningResult from '../components/WordLearningResult';
 
-// 从环境变量中获取API token
-const API_TOKEN = import.meta.env.VITE_COZE_IMAGE_TO_WORD || import.meta.env.COZE_IMAGE_TO_WORD;
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      const MAX = 1500;
+      if (width > MAX || height > MAX) {
+        const ratio = Math.min(MAX / width, MAX / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', 0.9));
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
 
 function LearnWordsPage() {
   const [activeTab, setActiveTab] = useState('home');
   const [learningResult, setLearningResult] = useState(null);
+  const [progressText, setProgressText] = useState('AI 识别中');
 
-  // 真实AI识别API调用（学习单词）
+  const handleClear = () => setLearningResult(null);
+
   const realRecognition = async (file) => {
-    try {
-      // 检查API token是否存在
-      if (!API_TOKEN) {
-        throw new Error('API token 未配置，请检查环境变量');
-      }
-      
-      // 将图片转换为完整的data URL格式
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result); // 保留完整的data URL格式
-        reader.onerror = error => reject(error);
-      });
-      
-      // 调用Coze API（通过Vite代理）
-      const response = await fetch('/coze-api/run', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          image: dataUrl,
-          manual_description: ""
-        })
-      });
-      
-      // 检查响应状态
-      if (!response.ok) {
-        throw new Error(`API调用失败: ${response.status} ${response.statusText}`);
-      }
-      
-      // 解析响应数据
-      const data = await response.json();
-      
-      // 假设API返回的结构如下，需要根据实际API响应调整
-      // { word: 'apple', pronunciation: 'æpəl', definition: '苹果', example1: 'I eat an apple every day.', example2: 'The apple tree is blooming.' }
-      const learningData = {
-        word: data.word || '未知单词',
-        pronunciation: data.pronunciation || '暂无发音',
-        definition: data.definition || '暂无定义',
-        example1: data.example1 || '暂无例句1',
-        example2: data.example2 || '暂无例句2',
-        // 如果API返回语音资源URL，可以保存下来
-        voiceUrl: data.voiceUrl || ''
-      };
-      
-      setLearningResult(learningData);
-      return learningData;
-    } catch (err) {
-      console.error('学习单词失败:', err);
-      throw err; // 重新抛出错误，让组件处理
+    setProgressText('正在压缩图片…');
+    const dataUrl = await compressImage(file);
+
+    setProgressText('AI 正在识别…');
+    const res = await fetch('/api/ai/recognize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl, type: 'word' }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `请求失败: ${res.status}`);
     }
+
+    const result = await res.json();
+    if (!result.success) throw new Error(result.message || '识别失败');
+
+    setProgressText('识别完成');
+    setLearningResult(result.data);
+    return result.data;
   };
-  
+
   return (
     <>
-      <ImageCaptureAndProcess 
+      <ImageCaptureAndProcess
         title="拍照学单词"
         onRecognition={realRecognition}
         resultComponent={WordLearningResult}
         resultData={learningResult}
         theme="green"
         className="learn-words-page"
+        onClear={handleClear}
+        progressText={progressText}
       />
-      
       <BottomNavigation activeTab={activeTab} />
     </>
   );
