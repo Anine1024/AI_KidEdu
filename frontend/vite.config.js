@@ -8,13 +8,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
-        changeOrigin: true
-      },
-      '/coze-api': {
-        target: 'https://api.coze.cn',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/coze-api/, '')
-      }
-    }
-  }
+      },
+    },
+  },
 });
