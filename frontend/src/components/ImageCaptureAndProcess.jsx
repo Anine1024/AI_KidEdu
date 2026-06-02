@@ -225,7 +225,10 @@ function ImageCaptureAndProcess({
               borderColor: `${currentTheme.loading}33`,
               borderTopColor: currentTheme.loading
             }}></div>
-            <p>{progressText}</p>
+            <p className="image-capture-loading__text">{progressText}</p>
+            <div className="image-capture-loading__bar">
+              <div className="image-capture-loading__bar-fill" />
+            </div>
           </div>
         )}
         
