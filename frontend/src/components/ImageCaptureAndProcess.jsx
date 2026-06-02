@@ -49,8 +49,8 @@ function ImageCaptureAndProcess({
             setSelectedImage(imageUrl);
             // 将Blob转换为File对象，添加文件名和类型
             const file = new File([blob], 'captured-image.jpg', { type: 'image/jpeg' });
-            // 调用识别回调
-            onRecognition(file);
+            // 调用识别处理函数（含loading状态管理）
+            handleRecognition(file);
           }
         }, 'image/jpeg', 0.8);
       }, 1000);
@@ -67,8 +67,8 @@ function ImageCaptureAndProcess({
       setError(null);
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
-      // 调用识别回调
-      onRecognition(file);
+      // 调用识别处理函数（含loading状态管理）
+      handleRecognition(file);
     }
   };
   
