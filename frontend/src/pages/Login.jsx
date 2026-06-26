@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Toast from '../components/Toast';
 import '../styles/login.less';
+
+
 
 function Login({ onLoginSuccess, onForgotPassword }) {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +52,7 @@ function Login({ onLoginSuccess, onForgotPassword }) {
       // 延迟一下再跳转，让用户看到成功提示
       setTimeout(() => {
         if (typeof onLoginSuccess === 'function') {
-          onLoginSuccess(data.token);
+          onLoginSuccess(data.token, data.user);
         }
       }, 500);
     } catch (err) {
@@ -77,12 +84,30 @@ function Login({ onLoginSuccess, onForgotPassword }) {
         <div className="auth-form__group">
           <i className="fas fa-lock auth-form__icon"></i>
           <input
-            type="password"
+            type={isPasswordVisible ? 'text' : 'password'}
             placeholder="请输入密码"
-            className="auth-form__input"
+            className="auth-form__input auth-form__input--password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <button
+            type="button"
+            className="auth-form__eye-toggle"
+            onClick={toggleVisibility}
+            aria-label={isPasswordVisible ? '隐藏密码' : '显示密码'}
+          >
+            {isPasswordVisible ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <line x1="2" y1="2" x2="22" y2="22"/>
+              </svg>
+            )}
+          </button>
         </div>
 
         <div className="auth-form__forgot-wrapper">

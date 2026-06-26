@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const {
   register,
   login,
+  me,
   wechatLogin,
   qqLogin,
   qqCallback,
@@ -15,6 +16,7 @@ const router = new Router({
 
 router.post('/register', register);
 router.post('/login', login);
+router.get('/me', me);
 router.get('/wechat', wechatLogin);
 router.get('/qq', qqLogin);
 router.get('/qq/callback', qqCallback);

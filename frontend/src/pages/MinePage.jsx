@@ -1,15 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/minePage.less';
 import BottomNavigation from '../components/BottomNavigation';
 
+const USER_INFO_KEY = 'user_info';
+const AUTH_TOKEN_KEY = 'auth_token';
+
 function MinePage() {
   const [activeTab, setActiveTab] = useState('mine');
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    // 先从 localStorage 读取缓存的用户信息（即时显示）
+    const cached = localStorage.getItem(USER_INFO_KEY);
+    if (cached) {
+      try {
+        setUser(JSON.parse(cached));
+      } catch (e) {
+        // ignore parse error
+      }
+    }
+
+    // 再从后端获取最新用户信息，同步到本地
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (token) {
+      fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.user) {
+            setUser(data.user);
+            localStorage.setItem(USER_INFO_KEY, JSON.stringify(data.user));
+          }
+        })
+        .catch(() => {
+          // 网络异常时使用缓存数据，不做处理
+        });
+    }
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_expires_at');
+    localStorage.removeItem(USER_INFO_KEY);
     navigate('/login');
   };
 
@@ -21,8 +56,8 @@ function MinePage() {
             <i className="fas fa-user"></i>
           </div>
           <div className="user-details">
-            <h2>我的账户</h2>
-            <p>亲子教育AI助手用户</p>
+            <h2>{user?.nickname || '我的账户'}</h2>
+            <p>{user?.phone || '亲子教育AI助手用户'}</p>
           </div>
         </div>
       </header>

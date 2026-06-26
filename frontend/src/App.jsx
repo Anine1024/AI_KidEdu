@@ -9,10 +9,13 @@ import ForgotPassword from './pages/ForgotPassword';
 import ObjectRecognitionPage from './pages/ObjectRecognitionPage';
 import LearnWordsPage from './pages/LearnWordsPage';
 import AIDialoguePage from './pages/AIDialoguePage';
+import VideoListPage from './pages/VideoListPage';
+import VideoPlayerPage from './pages/VideoPlayerPage';
 import './styles/app.less';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const AUTH_EXPIRES_KEY = 'auth_expires_at';
+const USER_INFO_KEY = 'user_info';
 
 // 认证保护路由组件
 const ProtectedRoute = ({ children }) => {
@@ -27,6 +30,7 @@ const ProtectedRoute = ({ children }) => {
     } else {
       localStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem(AUTH_EXPIRES_KEY);
+      localStorage.removeItem(USER_INFO_KEY);
       setIsAuthed(false);
       navigate('/login');
     }
@@ -41,11 +45,14 @@ const AuthPage = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleLoginSuccess = (token) => {
+  const handleLoginSuccess = (token, user) => {
     // 设定 24h 免登
     const ttlMs = 24 * 60 * 60 * 1000;
     localStorage.setItem(AUTH_TOKEN_KEY, token);
     localStorage.setItem(AUTH_EXPIRES_KEY, String(Date.now() + ttlMs));
+    if (user) {
+      localStorage.setItem(USER_INFO_KEY, JSON.stringify(user));
+    }
     navigate('/');
   };
 
@@ -198,7 +205,17 @@ function App() {
             <AIDialoguePage />
           </ProtectedRoute>
         } />
-        
+        <Route path="/videos" element={
+          <ProtectedRoute>
+            <VideoListPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/videos/:id" element={
+          <ProtectedRoute>
+            <VideoPlayerPage />
+          </ProtectedRoute>
+        } />
+
         {/* 默认路由 */}
         <Route path="*" element={<AuthPage />} />
       </Routes>

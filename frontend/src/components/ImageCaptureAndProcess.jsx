@@ -52,7 +52,7 @@ function ImageCaptureAndProcess({
             // 调用识别处理函数（含loading状态管理）
             handleRecognition(file);
           }
-        }, 'image/jpeg', 0.8);
+        }, 'image/jpeg', 0.7);
       }, 1000);
     } catch (err) {
       setError('无法访问摄像头，请检查权限设置');

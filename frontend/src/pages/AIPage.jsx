@@ -20,10 +20,10 @@ function AIPage() {
           <h3>智能对话</h3>
           <p>AI陪孩子聊天，解答各种问题</p>
         </div>
-        <div className="ai-feature-card">
-          <i className="fas fa-book-open ai-feature-icon"></i>
-          <h3>知识问答</h3>
-          <p>涵盖科学、历史、数学等多领域</p>
+        <div className="ai-feature-card" onClick={() => navigate('/videos')} style={{ cursor: 'pointer' }}>
+          <i className="fas fa-video ai-feature-icon"></i>
+          <h3>视频中心</h3>
+          <p>上传和播放视频资源</p>
         </div>
         <div className="ai-feature-card">
           <i className="fas fa-microphone ai-feature-icon"></i>

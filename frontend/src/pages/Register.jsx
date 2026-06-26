@@ -9,6 +9,7 @@ function Register({ onRegistered }) {
   const [captchaId, setCaptchaId] = useState('');
   const [captchaSvg, setCaptchaSvg] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -63,7 +64,15 @@ function Register({ onRegistered }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone, password, nickname, captchaId, captchaCode })
       });
-      const data = await res.json();
+
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (parseErr) {
+        throw new Error('服务器返回异常（非 JSON）');
+      }
+
       if (!res.ok) {
         throw new Error(data.message || '注册失败');
       }
@@ -144,12 +153,30 @@ function Register({ onRegistered }) {
         <div className="register-form__group">
           <i className="fas fa-lock register-form__icon"></i>
           <input
-            type="password"
+            type={isPasswordVisible ? 'text' : 'password'}
             placeholder="请设置密码"
-            className="register-form__input"
+            className="register-form__input register-form__input--password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <button
+            type="button"
+            className="register-form__eye-toggle"
+            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            aria-label={isPasswordVisible ? '隐藏密码' : '显示密码'}
+          >
+            {isPasswordVisible ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <line x1="2" y1="2" x2="22" y2="22"/>
+              </svg>
+            )}
+          </button>
         </div>
 
         {error && (

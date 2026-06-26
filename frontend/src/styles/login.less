@@ -40,6 +40,48 @@
       box-shadow: 0 0 0 3px rgba(91, 186, 138, 0.15);
       background-color: @bg-card;
     }
+
+    &--password {
+      padding-right: 46px;
+    }
+  }
+
+  &__eye-toggle {
+    position: absolute;
+    right: @space-lg;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1;
+    color: @text-secondary;
+    transition: color @transition-fast;
+    background: none;
+    border: none;
+    padding: 0;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    &:hover {
+      color: @primary;
+    }
+
+    &:focus-visible {
+      color: @primary;
+      outline: 2px solid @primary;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
   }
 
   &__forgot-wrapper {

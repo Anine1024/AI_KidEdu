@@ -4,13 +4,13 @@ import BottomNavigation from '../components/BottomNavigation';
 import ImageCaptureAndProcess from '../components/ImageCaptureAndProcess';
 import ObjectRecognitionResult from '../components/ObjectRecognitionResult';
 
-// 压缩图片（800px, 0.7 质量）
+// 压缩图片（800px, 0.7 质量，控制 base64 大小在 Coze token 限制内）
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       let { width, height } = img;
-      const MAX = 1500;
+      const MAX = 800;
       if (width > MAX || height > MAX) {
         const ratio = Math.min(MAX / width, MAX / height);
         width = Math.round(width * ratio);
@@ -21,7 +21,7 @@ function compressImage(file) {
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', 0.9));
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
     };
     img.onerror = reject;
     img.src = URL.createObjectURL(file);
@@ -54,12 +54,19 @@ function ObjectRecognitionPage() {
         body: JSON.stringify({ image: dataUrl, type: 'object' }),
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `请求失败: ${res.status}`);
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (parseErr) {
+        throw new Error('服务器返回异常（非 JSON）');
       }
 
-      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || `请求失败: ${res.status}`);
+      }
+
+      const result = data;
       if (!result.success) throw new Error(result.message || '识别失败');
 
       setProgressText(`识别完成 (${seconds}s)`);
