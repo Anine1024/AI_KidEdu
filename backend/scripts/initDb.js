@@ -2,44 +2,61 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-async function main() {
-  const {
-    DB_HOST = '127.0.0.1',
-    DB_PORT = 3306,
-    DB_USER = 'root',
-    DB_PASSWORD = '',
-    DB_NAME = 'parent_kid_edu'
-  } = process.env;
+function parseDbConfig() {
+  // Railway 等平台注入的连接串优先
+  const url = process.env.DATABASE_URL || process.env.MYSQL_URL;
+  if (url) {
+    const u = new URL(url);
+    return {
+      host: u.hostname,
+      port: Number(u.port) || 3306,
+      user: u.username,
+      password: u.password,
+      database: u.pathname.replace('/', ''),
+    };
+  }
+  // 本地开发用独立变量
+  return {
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: Number(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'parent_kid_edu',
+  };
+}
 
+async function main() {
+  const cfg = parseDbConfig();
   console.log('开始初始化数据库...');
+  console.log(`连接目标: ${cfg.host}:${cfg.port}, 数据库: ${cfg.database}`);
 
   // 1. 先连到不指定库的 MySQL，用来创建数据库
   const rootConn = await mysql.createConnection({
-    host: DB_HOST,
-    port: DB_PORT,
-    user: DB_USER,
-    password: DB_PASSWORD
+    host: cfg.host,
+    port: cfg.port,
+    user: cfg.user,
+    password: cfg.password
   });
 
   await rootConn.query(
-    `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+    `CREATE DATABASE IF NOT EXISTS \`${cfg.database}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
   );
-  console.log(`数据库 \`${DB_NAME}\` 已确保存在`);
+  console.log(`数据库 \`${cfg.database}\` 已确保存在`);
   await rootConn.end();
 
   // 2. 连接到刚创建/已存在的库
   const conn = await mysql.createConnection({
-    host: DB_HOST,
-    port: DB_PORT,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME
+    host: cfg.host,
+    port: cfg.port,
+    user: cfg.user,
+    password: cfg.password,
+    database: cfg.database
   });
 
   // 3. 创建 users 表（如不存在则建新表，已存在则迁移缺失列）
   const [tables] = await conn.query(
     `SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users'`,
-    [DB_NAME]
+    [cfg.database]
   );
   const tableExists = tables.length > 0;
 
